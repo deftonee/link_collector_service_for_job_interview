@@ -1,0 +1,11 @@
+django
+djangorestframework
+redis
+pyyaml
+uritemplate
+tldextract
+
+pytest
+pytest-django
+pytest-redis
+mypy
