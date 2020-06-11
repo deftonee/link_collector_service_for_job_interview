@@ -40,14 +40,15 @@ class RedisLinkStorage(LinkStorage):
         )
 
     def add_link(self, link: str, timestamp: float) -> None:
-        length = self.client.rpush(
+        n = self.client.hlen(settings.LINKS_STORAGE_KEY)
+        self.client.hset(
             settings.LINKS_STORAGE_KEY,
+            n,
             link,
         )
-        index = length - 1
         self.client.zadd(
             settings.TIMESTAMPS_STORAGE_KEY,
-            {index: timestamp},
+            {n: timestamp},
         )
 
     def get_links(
@@ -63,7 +64,7 @@ class RedisLinkStorage(LinkStorage):
         links = []
         for link_key in link_keys:
             links.append(
-                self.client.lindex(
+                self.client.hget(
                     settings.LINKS_STORAGE_KEY, link_key,
                 ).decode()
             )
